@@ -1,8 +1,12 @@
 const express = require('express');
 const {getHospitals, getHospital, createHospital, updateHospital, deleteHospital} = require('../controllers/hospitals');
-var Router = express.Router();
+const router = express.Router();
 
-Router.route('/').get(getHospitals).post(createHospital);
-Router.route('/:id').get(getHospital).put(updateHospital).delete(deleteHospital);
+const {protect, authorize} = require('../middleware/auth');
 
-module.exports = Router;
+
+
+router.route('/').get(getHospitals).post(protect,authorize('admin'),createHospital);
+router.route('/:id').get(getHospital).put(protect,authorize('admin'),updateHospital).delete(protect,authorize('admin'),deleteHospital);
+
+module.exports = router;
